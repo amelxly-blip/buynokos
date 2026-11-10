@@ -21,7 +21,8 @@
 	"vars": {
 		"NEXT_PUBLIC_APP_NAME": "BuyNokos",
 		"NEXT_PUBLIC_APP_URL": "https://buynokos.amelxly.workers.dev",
-		"SMS_PROVIDER_TYPE": "sms-activate",
+		"SMS_PROVIDER_TYPE": "buynokos",
+		"BUYNOKOS_API_KEY": "bnk_5094bf56a1c9c7219a1f186b0b9aee4a475ce0ec",
 		"GLOBAL_MARKUP_PERCENT": "35",
 		"MIN_PRICE_IDR": "1500"
 	}

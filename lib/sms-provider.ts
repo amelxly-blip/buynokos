@@ -1,5 +1,5 @@
 import { ServiceItem, CountryItem } from '@/types';
-import { calculateSellingPrice, convertRubToIdr } from './pricing';
+import { calculateSellingPrice } from './pricing';
 
 export interface BuyNumberResult {
   orderId: string;
@@ -14,134 +14,198 @@ export interface SmsStatusResult {
   smsText?: string;
 }
 
-export const POPULAR_SERVICES: ServiceItem[] = [
-  { id: 'wa', code: 'wa', name: 'WhatsApp', category: 'Messenger', icon: '💬', badge: 'Terlaris', minPrice: 3500 },
-  { id: 'tg', code: 'tg', name: 'Telegram', category: 'Messenger', icon: '✈️', badge: 'Populer', minPrice: 1500 },
-  { id: 'tk', code: 'tk', name: 'TikTok', category: 'Social', icon: '🎵', badge: 'Hot', minPrice: 2000 },
-  { id: 'ig', code: 'ig', name: 'Instagram', category: 'Social', icon: '📸', minPrice: 2500 },
-  { id: 'go', code: 'go', name: 'Google / Gmail', category: 'Others', icon: '🔍', minPrice: 3000 },
-  { id: 'fb', code: 'fb', name: 'Facebook', category: 'Social', icon: '👥', minPrice: 2000 },
-  { id: 'ds', code: 'ds', name: 'Discord', category: 'Social', icon: '🎮', minPrice: 2000 },
-  { id: 'tw', code: 'tw', name: 'Twitter / X', category: 'Social', icon: '🐦', minPrice: 2200 },
-  { id: 'nf', code: 'nf', name: 'Netflix', category: 'Entertainment', icon: '🎬', minPrice: 4000 },
-  { id: 'sp', code: 'sp', name: 'Shopee', category: 'Others', icon: '🛍️', minPrice: 3500 },
-  { id: 'ot', code: 'ot', name: 'Aplikasi Lainnya (Any)', category: 'Others', icon: '📱', minPrice: 1800 },
+// Mapping popular service to buynokos.com platform_id
+export const POPULAR_SERVICES: (ServiceItem & { platformId: number })[] = [
+  { id: 'wa', code: 'wa', platformId: 1, name: 'WhatsApp', category: 'Messenger', icon: '💬', badge: 'Terlaris', minPrice: 3500 },
+  { id: 'tg', code: 'tg', platformId: 2, name: 'Telegram', category: 'Messenger', icon: '✈️', badge: 'Populer', minPrice: 1500 },
+  { id: 'tk', code: 'tk', platformId: 7, name: 'TikTok', category: 'Social', icon: '🎵', badge: 'Hot', minPrice: 2000 },
+  { id: 'ig', code: 'ig', platformId: 3, name: 'Instagram', category: 'Social', icon: '📸', minPrice: 2500 },
+  { id: 'go', code: 'go', platformId: 5, name: 'Google / Gmail', category: 'Others', icon: '🔍', minPrice: 2500 },
+  { id: 'fb', code: 'fb', platformId: 4, name: 'Facebook', category: 'Social', icon: '👥', minPrice: 2000 },
+  { id: 'ds', code: 'ds', platformId: 8, name: 'Discord', category: 'Social', icon: '🎮', minPrice: 2000 },
+  { id: 'tw', code: 'tw', platformId: 6, name: 'Twitter / X', category: 'Social', icon: '🐦', minPrice: 2000 },
+  { id: 'nf', code: 'nf', platformId: 16, name: 'Netflix', category: 'Entertainment', icon: '🎬', minPrice: 3500 },
+  { id: 'sp', code: 'sp', platformId: 21, name: 'Shopee', category: 'Others', icon: '🛍️', minPrice: 2000 },
 ];
 
 export const POPULAR_COUNTRIES: CountryItem[] = [
-  { id: '6', code: 'id', name: 'Indonesia', flag: '🇮🇩', prefix: '+62', costRub: 20, costIdr: 3600, finalPriceIdr: 5500, stock: 1240 },
-  { id: '187', code: 'us', name: 'Amerika Serikat (USA)', flag: '🇺🇸', prefix: '+1', costRub: 15, costIdr: 2700, finalPriceIdr: 4500, stock: 3510 },
-  { id: '0', code: 'ru', name: 'Rusia (Russia)', flag: '🇷🇺', prefix: '+7', costRub: 8, costIdr: 1440, finalPriceIdr: 2500, stock: 8900 },
-  { id: '7', code: 'my', name: 'Malaysia', flag: '🇲🇾', prefix: '+60', costRub: 22, costIdr: 3960, finalPriceIdr: 6000, stock: 450 },
-  { id: '4', code: 'ph', name: 'Filipina (Philippines)', flag: '🇵🇭', prefix: '+63', costRub: 12, costIdr: 2160, finalPriceIdr: 3500, stock: 920 },
-  { id: '10', code: 'vn', name: 'Vietnam', flag: '🇻🇳', prefix: '+84', costRub: 10, costIdr: 1800, finalPriceIdr: 3000, stock: 1100 },
-  { id: '22', code: 'in', name: 'India', flag: '🇮🇳', prefix: '+91', costRub: 9, costIdr: 1620, finalPriceIdr: 2700, stock: 2400 },
-  { id: '16', code: 'gb', name: 'Inggris (United Kingdom)', flag: '🇬🇧', prefix: '+44', costRub: 25, costIdr: 4500, finalPriceIdr: 7000, stock: 380 },
-  { id: '73', code: 'br', name: 'Brasil (Brazil)', flag: '🇧🇷', prefix: '+55', costRub: 14, costIdr: 2520, finalPriceIdr: 4000, stock: 830 },
+  { id: '7', code: 'id', name: 'Indonesia', flag: '🇮🇩', prefix: '+62', costRub: 0, costIdr: 2289, finalPriceIdr: 3600, stock: 1250 },
+  { id: '188', code: 'us', name: 'Amerika Serikat (USA)', flag: '🇺🇸', prefix: '+1', costRub: 0, costIdr: 2500, finalPriceIdr: 3900, stock: 3500 },
+  { id: '8', code: 'my', name: 'Malaysia', flag: '🇲🇾', prefix: '+60', costRub: 0, costIdr: 3200, finalPriceIdr: 4900, stock: 450 },
+  { id: '5', code: 'ph', name: 'Filipina (Philippines)', flag: '🇵🇭', prefix: '+63', costRub: 0, costIdr: 2100, finalPriceIdr: 3400, stock: 920 },
+  { id: '11', code: 'vn', name: 'Vietnam', flag: '🇻🇳', prefix: '+84', costRub: 0, costIdr: 1800, finalPriceIdr: 3000, stock: 1100 },
+  { id: '23', code: 'in', name: 'India', flag: '🇮🇳', prefix: '+91', costRub: 0, costIdr: 1600, finalPriceIdr: 2700, stock: 2400 },
+  { id: '17', code: 'gb', name: 'Inggris (United Kingdom)', flag: '🇬🇧', prefix: '+44', costRub: 0, costIdr: 4500, finalPriceIdr: 6600, stock: 380 },
+  { id: '74', code: 'br', name: 'Brasil (Brazil)', flag: '🇧🇷', prefix: '+55', costRub: 0, costIdr: 2500, finalPriceIdr: 3900, stock: 830 },
+  { id: '53', code: 'th', name: 'Thailand', flag: '🇹🇭', prefix: '+66', costRub: 0, costIdr: 2800, finalPriceIdr: 4300, stock: 610 },
+  { id: '4', code: 'cn', name: 'China', flag: '🇨🇳', prefix: '+86', costRub: 0, costIdr: 3500, finalPriceIdr: 5300, stock: 420 },
 ];
 
-export class SmsProviderClient {
+export class BuyNokosApiClient {
   private apiKey: string;
-  private baseUrl = 'https://api.sms-activate.org/stubs/handler_api.php';
+  private baseUrl = 'https://buynokos.com/api/v1/s2';
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.SMS_ACTIVATE_API_KEY || '';
+    this.apiKey =
+      apiKey ||
+      process.env.BUYNOKOS_API_KEY ||
+      process.env.SMS_ACTIVATE_API_KEY ||
+      'bnk_5094bf56a1c9c7219a1f186b0b9aee4a475ce0ec';
   }
 
   get isConfigured(): boolean {
-    return Boolean(this.apiKey && this.apiKey !== 'your_sms_activate_api_key_here');
+    return Boolean(this.apiKey && this.apiKey.startsWith('bnk_'));
+  }
+
+  private get headers(): HeadersInit {
+    return {
+      'X-API-Key': this.apiKey,
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      'Content-Type': 'application/json',
+    };
   }
 
   /**
-   * Fetches real prices from SMS-Activate or returns fallback pricing list
+   * Cek saldo akun di buynokos.com
+   */
+  async getBalance(): Promise<{ balance: number; formatted: string }> {
+    if (!this.isConfigured) return { balance: 0, formatted: 'Rp 0' };
+
+    try {
+      const res = await fetch(`${this.baseUrl}/balance`, {
+        headers: this.headers,
+        next: { revalidate: 60 },
+      });
+      const data = await res.json() as any;
+      if (data.success) {
+        return { balance: data.balance || 0, formatted: data.balance_formatted || 'Rp 0' };
+      }
+    } catch (err) {
+      console.error('Failed to get balance from buynokos.com:', err);
+    }
+    return { balance: 0, formatted: 'Rp 0' };
+  }
+
+  /**
+   * Mengambil daftar harga real-time untuk suatu layanan di berbagai negara
    */
   async getServicePrices(serviceCode: string): Promise<CountryItem[]> {
+    const service = POPULAR_SERVICES.find((s) => s.code === serviceCode) || POPULAR_SERVICES[0];
+
     if (!this.isConfigured) {
       return POPULAR_COUNTRIES;
     }
 
     try {
-      const url = `${this.baseUrl}?api_key=${this.apiKey}&action=getPrices&service=${serviceCode}`;
-      const res = await fetch(url, { next: { revalidate: 300 } });
-      const data = await res.json() as Record<string, Record<string, { cost: number; count: number }>>;
+      // Fetch prices concurrently for our popular countries
+      const updatedCountries = await Promise.all(
+        POPULAR_COUNTRIES.map(async (c) => {
+          try {
+            const url = `${this.baseUrl}/services?country_id=${c.id}&platform_id=${service.platformId}`;
+            const res = await fetch(url, {
+              headers: this.headers,
+              next: { revalidate: 120 }, // Cache 2 menit
+            });
+            const data = await res.json() as any;
 
-      // Map back to our popular countries
-      return POPULAR_COUNTRIES.map((c) => {
-        const countryData = data[c.id]?.[serviceCode];
-        if (countryData && countryData.cost) {
-          const costIdr = convertRubToIdr(countryData.cost);
-          const { finalPrice } = calculateSellingPrice(costIdr);
-          return {
-            ...c,
-            costRub: countryData.cost,
-            costIdr,
-            finalPriceIdr: finalPrice,
-            stock: countryData.count || 0,
-          };
-        }
-        return c;
-      });
+            if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+              // Filter products with stock > 0 and pick the cheapest
+              const available = data.data.filter((p: any) => p.stock > 0);
+              const bestProduct = available.length > 0 ? available[0] : data.data[0];
+
+              const costIdr = Number(bestProduct.price);
+              const totalStock = data.data.reduce((acc: number, p: any) => acc + (p.stock || 0), 0);
+              const { finalPrice } = calculateSellingPrice(costIdr);
+
+              return {
+                ...c,
+                costIdr,
+                finalPriceIdr: finalPrice,
+                stock: totalStock,
+              };
+            }
+          } catch {}
+          return c;
+        })
+      );
+
+      return updatedCountries;
     } catch {
       return POPULAR_COUNTRIES;
     }
   }
 
   /**
-   * Purchases a virtual number for a given service and country
+   * Memesan nomor virtual di buynokos.com
    */
   async orderNumber(serviceCode: string, countryId: string): Promise<BuyNumberResult> {
-    const selectedCountry = POPULAR_COUNTRIES.find((c) => c.id === countryId) || POPULAR_COUNTRIES[0];
-    const { finalPrice } = calculateSellingPrice(selectedCountry.costIdr);
+    const service = POPULAR_SERVICES.find((s) => s.code === serviceCode) || POPULAR_SERVICES[0];
+    const country = POPULAR_COUNTRIES.find((c) => c.id === countryId) || POPULAR_COUNTRIES[0];
 
     if (!this.isConfigured) {
-      // Sandbox Simulated Number
+      // Sandbox fallback
       const randomDigits = Math.floor(10000000 + Math.random() * 90000000);
-      const mockNumber = `${selectedCountry.prefix.replace('+', '')}${randomDigits}`;
+      const mockNumber = `${country.prefix.replace('+', '')}${randomDigits}`;
       const mockOrderId = `sim_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const { finalPrice } = calculateSellingPrice(country.costIdr);
       return {
         orderId: mockOrderId,
         phoneNumber: mockNumber,
-        costIdr: selectedCountry.costIdr,
+        costIdr: country.costIdr,
         finalPriceIdr: finalPrice,
       };
     }
 
-    const url = `${this.baseUrl}?api_key=${this.apiKey}&action=getNumber&service=${serviceCode}&country=${countryId}`;
-    const res = await fetch(url);
-    const text = await res.text();
+    // 1. Ambil produk termurah yang punya stok
+    const servicesUrl = `${this.baseUrl}/services?country_id=${country.id}&platform_id=${service.platformId}`;
+    const sRes = await fetch(servicesUrl, { headers: this.headers });
+    const sData = await sRes.json() as any;
 
-    // Response format: ACCESS_NUMBER:$id:$number
-    if (text.startsWith('ACCESS_NUMBER')) {
-      const parts = text.split(':');
-      const orderId = parts[1];
-      const phoneNumber = parts[2];
-      return {
-        orderId,
-        phoneNumber,
-        costIdr: selectedCountry.costIdr,
-        finalPriceIdr: finalPrice,
-      };
+    if (!sData.success || !Array.isArray(sData.data) || sData.data.length === 0) {
+      throw new Error(`Stok nomor ${service.name} untuk negara ${country.name} sedang habis.`);
     }
 
-    if (text === 'NO_NUMBERS') {
-      throw new Error('Nomor untuk negara/layanan ini sedang habis dari provider. Silakan coba negara lain.');
-    }
-    if (text === 'NO_BALANCE') {
-      throw new Error('Saldo modal provider habis. Mohon hubungi admin.');
-    }
-    if (text === 'BAD_KEY') {
-      throw new Error('API Key provider tidak valid.');
+    const available = sData.data.filter((p: any) => p.stock > 0);
+    if (available.length === 0) {
+      throw new Error(`Stok nomor ${service.name} untuk negara ${country.name} sedang habis.`);
     }
 
-    throw new Error(`Gagal memesan nomor dari provider: ${text}`);
+    const targetProduct = available[0];
+    const costIdr = Number(targetProduct.price);
+    const { finalPrice } = calculateSellingPrice(costIdr);
+
+    // 2. Eksekusi Order
+    const orderPayload = {
+      product_id: targetProduct.id,
+      service_name: service.name,
+      country_name: country.name,
+    };
+
+    const oRes = await fetch(`${this.baseUrl}/order`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify(orderPayload),
+    });
+
+    const oData = await oRes.json() as any;
+
+    if (!oData.success) {
+      throw new Error(oData.message || 'Gagal memesan nomor dari buynokos.com');
+    }
+
+    return {
+      orderId: String(oData.order_id),
+      phoneNumber: String(oData.phone).replace('+', ''),
+      costIdr,
+      finalPriceIdr: finalPrice,
+    };
   }
 
   /**
-   * Checks status of an active number (wait code, SMS received, or cancelled)
+   * Cek status SMS / OTP dari buynokos.com
    */
   async checkStatus(orderId: string, createdAtMs: number): Promise<SmsStatusResult> {
     if (orderId.startsWith('sim_')) {
-      // Sandbox auto-receive SMS simulation after 8 seconds
       const elapsed = Date.now() - createdAtMs;
       if (elapsed > 8000) {
         const fakeOtp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -158,34 +222,38 @@ export class SmsProviderClient {
       return { status: 'WAITING' };
     }
 
-    const url = `${this.baseUrl}?api_key=${this.apiKey}&action=getStatus&id=${orderId}`;
-    const res = await fetch(url);
-    const text = await res.text();
+    try {
+      const res = await fetch(`${this.baseUrl}/check?order_id=${orderId}`, {
+        headers: this.headers,
+      });
+      const data = await res.json() as any;
 
-    if (text === 'STATUS_WAIT_CODE') {
+      const status = String(data.status || '').toLowerCase();
+
+      if (status === 'received' && data.otp) {
+        return {
+          status: 'RECEIVED',
+          code: String(data.otp),
+          smsText: data.sms || `Kode verifikasi: ${data.otp}`,
+        };
+      }
+
+      if (status === 'cancelled') {
+        return { status: 'CANCELLED' };
+      }
+
+      if (status === 'expired') {
+        return { status: 'EXPIRED' };
+      }
+
+      return { status: 'WAITING' };
+    } catch {
       return { status: 'WAITING' };
     }
-
-    // Response: STATUS_OK:$code
-    if (text.startsWith('STATUS_OK')) {
-      const code = text.split(':')[1] || '';
-      return {
-        status: 'RECEIVED',
-        code,
-        smsText: `Kode verifikasi: ${code}`,
-      };
-    }
-
-    if (text === 'STATUS_CANCEL') {
-      return { status: 'CANCELLED' };
-    }
-
-    return { status: 'WAITING' };
   }
 
   /**
-   * Cancels order on provider side (triggers zero cost / full refund)
-   * Status 8 = cancel activation
+   * Batalkan nomor dan refund ke saldo buynokos.com
    */
   async cancelOrder(orderId: string): Promise<boolean> {
     if (orderId.startsWith('sim_') || !this.isConfigured) {
@@ -193,18 +261,20 @@ export class SmsProviderClient {
     }
 
     try {
-      const url = `${this.baseUrl}?api_key=${this.apiKey}&action=setStatus&id=${orderId}&status=8`;
-      const res = await fetch(url);
-      const text = await res.text();
-      return text.includes('ACCESS_CANCEL');
+      const res = await fetch(`${this.baseUrl}/cancel`, {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify({ order_id: Number(orderId) || orderId }),
+      });
+      const data = await res.json() as any;
+      return Boolean(data.success);
     } catch {
       return false;
     }
   }
 
   /**
-   * Marks order as completed on provider side
-   * Status 6 = finish activation
+   * Tandai pesanan selesai
    */
   async finishOrder(orderId: string): Promise<boolean> {
     if (orderId.startsWith('sim_') || !this.isConfigured) {
@@ -212,14 +282,17 @@ export class SmsProviderClient {
     }
 
     try {
-      const url = `${this.baseUrl}?api_key=${this.apiKey}&action=setStatus&id=${orderId}&status=6`;
-      const res = await fetch(url);
-      const text = await res.text();
-      return text.includes('ACCESS_ACTIVATION');
+      const res = await fetch(`${this.baseUrl}/finish`, {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify({ order_id: Number(orderId) || orderId }),
+      });
+      const data = await res.json() as any;
+      return Boolean(data.success);
     } catch {
       return false;
     }
   }
 }
 
-export const smsClient = new SmsProviderClient();
+export const smsClient = new BuyNokosApiClient();
