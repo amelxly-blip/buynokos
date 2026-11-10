@@ -5,7 +5,8 @@
   "description": "Platform Jual Nokos (Nomor Virtual OTP) Otomatis 24 Jam dengan QRIS & Auto-Refund",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
+    "build:next": "next build",
     "start": "next start",
     "lint": "next lint",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

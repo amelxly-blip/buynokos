@@ -2,6 +2,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
 	"name": "buynokos",
+	"account_id": "a9dd1c7786fec7b990ff59630a878f24",
 	"compatibility_date": "2026-10-29",
 	"compatibility_flags": [
 		"nodejs_compat",
