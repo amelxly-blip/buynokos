@@ -1,0 +1,27 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": ".open-next/worker.js",
+	"name": "buynokos",
+	"compatibility_date": "2026-10-29",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "buynokos"
+		}
+	],
+	"vars": {
+		"NEXT_PUBLIC_APP_NAME": "BuyNokos",
+		"NEXT_PUBLIC_APP_URL": "https://buynokos.amelxly.workers.dev",
+		"SMS_PROVIDER_TYPE": "sms-activate",
+		"GLOBAL_MARKUP_PERCENT": "35",
+		"MIN_PRICE_IDR": "1500"
+	}
+}
