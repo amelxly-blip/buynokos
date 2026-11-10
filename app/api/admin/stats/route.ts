@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin, isSupabaseConfigured, memoryStore } from '@/lib/supabase';
 
-export const runtime = 'edge';
 
 export async function GET() {
   try {

@@ -3,7 +3,6 @@ import { paymentGateway } from '@/lib/payment-gateway';
 import { getSupabaseAdmin, isSupabaseConfigured, memoryStore } from '@/lib/supabase';
 import { DepositRecord } from '@/types';
 
-export const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {

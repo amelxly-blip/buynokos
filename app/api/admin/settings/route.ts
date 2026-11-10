@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { DEFAULT_PRICING_RULE } from '@/lib/pricing';
 import { getSupabaseAdmin, isSupabaseConfigured } from '@/lib/supabase';
 
-export const runtime = 'edge';
 
 export async function GET() {
   try {

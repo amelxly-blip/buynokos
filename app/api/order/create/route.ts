@@ -3,7 +3,6 @@ import { smsClient, POPULAR_SERVICES, POPULAR_COUNTRIES } from '@/lib/sms-provid
 import { getSupabaseAdmin, isSupabaseConfigured, memoryStore } from '@/lib/supabase';
 import { NokosOrder } from '@/types';
 
-export const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {

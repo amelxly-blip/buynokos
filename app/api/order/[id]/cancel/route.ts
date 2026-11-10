@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { smsClient } from '@/lib/sms-provider';
 import { getSupabaseAdmin, isSupabaseConfigured, memoryStore } from '@/lib/supabase';
 
-export const runtime = 'edge';
 
 export async function POST(
   request: Request,

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { POPULAR_SERVICES, smsClient } from '@/lib/sms-provider';
 
-export const runtime = 'edge';
 
 export async function GET(request: Request) {
   try {
